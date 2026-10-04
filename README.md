@@ -1,6 +1,6 @@
 # ExportSql
 
-Consultas SQL dentro do TOTVS Protheus, com exportação para **Excel (.xlsx)** ou **SQLite (.db)** e visualização na tela.
+Consultas SQL dentro do TOTVS Protheus, com exportação para **Excel (.xlsx)** ou **.sdb do Protheus** (SQLite, o mesmo formato do APSDU) e visualização na tela.
 
 **Site:** https://marcelosecate.github.io/ExportSql/
 
@@ -17,7 +17,7 @@ Testado no Protheus 12.1.2510 (AppServer 7.00.240223P) com SQL Server, pelo Smar
 
 - Uma ou várias consultas (arquivo .sql ou query colada), um arquivo por consulta.
 - Excel: .xlsx com a query documentada numa aba.
-- SQLite: .db com o resultado na tabela `CONSULTA` e um .txt com a query executada, sem os limites de linhas e de tamanho de célula do Excel.
+- .sdb: o arquivo local do Protheus (o mesmo do APSDU), com tipos e tamanhos de cada campo, para filtrar registros por SQL numa base e importar em outra; um .txt ao lado guarda a query executada.
 - Visualização do resultado na tela, em grade, até 10.000 linhas.
 - Editor com cores no estilo do SQL Server Management Studio e botão Formatar.
 - Conversão de query para código AdvPL (String, BeginSql ou FWExecStatement) e o caminho inverso.

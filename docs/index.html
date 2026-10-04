@@ -7,7 +7,7 @@
 <link rel="icon" href="favicon.ico?v=2" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=2">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=2">
-<meta name="description" content="ExportSql: consultas SQL dentro do Protheus, com exportação para Excel ou SQLite, visualização na tela, editor com cores e conversão para AdvPL. Gratuito.">
+<meta name="description" content="ExportSql: consultas SQL dentro do Protheus, com exportação para Excel ou .sdb do Protheus, visualização na tela, editor com cores e conversão para AdvPL. Gratuito.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -224,8 +224,8 @@
     <div class="wrap">
       <div>
         <span class="eyebrow">Para TOTVS Protheus · Gratuito</span>
-        <h1>Consultas SQL dentro do Protheus,<br><span>direto para Excel ou SQLite.</span></h1>
-        <p class="lead">Sem acesso direto ao banco? Com o ExportSql você roda suas consultas de dentro do próprio ERP, vê o resultado na tela ou gera, por consulta, uma planilha .xlsx ou um banco SQLite .db, com segurança e auditoria.</p>
+        <h1>Consultas SQL dentro do Protheus,<br><span>direto para Excel ou .sdb.</span></h1>
+        <p class="lead">Sem acesso direto ao banco? Com o ExportSql você roda suas consultas de dentro do próprio ERP, vê o resultado na tela ou gera, por consulta, uma planilha .xlsx ou um arquivo .sdb do Protheus para importar em outra base, com segurança e auditoria.</p>
         <div class="cta">
           <a class="btn btn-primary" href="#download">Baixar o patch</a>
           <a class="btn btn-ghost" href="#telas">Ver as telas</a>
@@ -261,8 +261,8 @@
       <div class="features">
         <div class="feature">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13l3 4m0-4l-3 4m6-4h3m-3 4h3"/></svg></div>
-          <h3>Excel ou SQLite</h3>
-          <p>Um arquivo .sql com várias consultas gera um arquivo para cada uma: .xlsx com a query documentada numa aba, ou .db (SQLite) com a query num .txt ao lado.</p>
+          <h3>Excel ou .sdb</h3>
+          <p>Um arquivo .sql com várias consultas gera um arquivo para cada uma: .xlsx com a query documentada numa aba, ou .sdb (o mesmo formato do APSDU) com a query num .txt ao lado.</p>
         </div>
         <div class="feature">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div>
@@ -282,7 +282,7 @@
         <div class="feature">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg></div>
           <h3>Tipos pelo dicionário</h3>
-          <p>Datas e números chegam no Excel e no SQLite com o tipo certo, lidos da SX3.</p>
+          <p>Datas e números chegam no Excel e no .sdb com o tipo certo, lidos da SX3.</p>
         </div>
         <div class="feature">
           <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div>
@@ -309,7 +309,7 @@
               <li>Login com usuário do Protheus e escolha de empresa e filial</li>
               <li>Execute um arquivo .sql ou uma query colada</li>
               <li>Histórico de pastas, arquivos e opções</li>
-              <li>Saída em Excel, SQLite ou na tela</li>
+              <li>Saída em Excel, .sdb ou na tela</li>
             </ul>
           </div>
         </div>
@@ -403,8 +403,8 @@
           <p>A rotina executa o SQL pelo DBAccess e não converte sintaxe: escreva a consulta para o banco do seu ambiente. Até agora ela foi testada com SQL Server.</p>
         </details>
         <details>
-          <summary>Por que exportar para SQLite?</summary>
-          <p>O arquivo .db não tem o limite de linhas por aba nem o corte de 32.767 caracteres por célula do Excel, é gerado bem mais rápido e pode ser consultado com SQL em ferramentas como o DB Browser for SQLite. Um .txt ao lado guarda a query executada.</p>
+          <summary>Para que serve o .sdb?</summary>
+          <p>Para levar só os registros que interessam de uma base para outra: você filtra por SQL na homologação, por exemplo, e importa o .sdb na produção pelo APSDU. É o mesmo formato que o APSDU gera ao copiar uma tabela, criado pelo próprio Protheus, com os tipos e tamanhos de cada campo. Para levar também os registros excluídos marcados como excluídos, traga <code>D_E_L_E_T_ AS EXP_DEL</code> na query. Um .txt ao lado guarda a query executada.</p>
         </details>
         <details>
           <summary>Preciso criar tabelas ou campos no dicionário?</summary>

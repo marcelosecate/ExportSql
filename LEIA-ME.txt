@@ -1,5 +1,5 @@
-﻿ExportSql v1.0 - consultas SQL dentro do Protheus, com exportação para Excel ou SQLite
-====================================================================================
+﻿ExportSql v1.0 - consultas SQL dentro do Protheus, com exportação para Excel ou .sdb
+==================================================================================
 
 Autor: Marcelo Spilares Secate
 Contato: marcelo.spilares@gmail.com | WhatsApp (41) 9.9191-1341
@@ -10,8 +10,9 @@ Testado em: Protheus 12.1.2510 com SQL Server, SmartClient webapp
 ----------
 Rotina para Protheus que executa consultas SQL (arquivo .sql ou query colada)
 e entrega o resultado em planilhas .xlsx (uma por consulta, com a query
-documentada numa aba), em bancos SQLite .db (um por consulta, com a query num
-.txt ao lado) ou numa grade na tela.
+documentada numa aba), em arquivos .sdb do Protheus (SQLite, o mesmo formato
+do APSDU, para importar em outra base; um por consulta, com a query num .txt ao
+lado) ou numa grade na tela.
 
 Recursos principais:
 - Somente consultas: comandos de alteração (INSERT, UPDATE, DELETE, DROP...)
@@ -60,25 +61,37 @@ Na tela:
 1) Em "Ambiente", informe empresa, filial, usuário e senha do Protheus.
    O usuário precisa pertencer ao grupo Administradores (000000).
 2) Escolha o que executar: "Arquivo .sql" ou "Query colada".
-3) Escolha o Formato (Excel .xlsx ou SQLite .db) e informe a pasta de
+3) Escolha o Formato (Excel .xlsx ou SQLite Protheus .sdb) e informe a pasta de
    destino (ou marque "Visualizar" para ver o resultado na tela).
 4) Clique em Executar.
 
 Em arquivos .sql com várias consultas, separe as consultas com ";".
 
 Nome dos arquivos gerados:
-  SIGLA_EMP_FIL_<origem>_Q<n>[_<título>]_<data>_<hora>.xlsx (ou .db e .txt)
-  Ex.: SB1_99_01_colado_Q1_20261003_235458.db
+  SIGLA_EMP_FIL_<origem>_Q<n>[_<título>]_<data>_<hora>.xlsx (ou .sdb e .txt)
+  Ex.: SX6_99_01_colado_Q1_20261004_125729.sdb
   A sigla vem da 1ª tabela da consulta no padrão Protheus (SB1990 -> SB1).
   Consulta sem tabela nesse padrão: o nome começa pela origem.
 
-Formato SQLite:
-- Um arquivo .db por consulta, com o resultado na tabela CONSULTA (colunas
-  com os mesmos nomes da planilha). Abre em ferramentas como o DB Browser for
-  SQLite ou o sqlite3.
-- Tipos pelo dicionário (SX3): texto e memo como TEXT (inteiros, sem o limite
-  de 32.767 caracteres da célula do Excel), números como INTEGER ou REAL,
-  datas como texto AAAA-MM-DD (data vazia fica nula).
+Formato SQLite Protheus (.sdb):
+- Um arquivo .sdb por consulta, no mesmo formato do APSDU ("SQLite (local)"):
+  o arquivo local do Protheus, criado pelo próprio Protheus (driver SQLITE),
+  com a estrutura (nome, tipo, tamanho e decimais) de cada campo.
+- Uso principal: filtrar registros por SQL numa base (ex.: homologação) e
+  importar o .sdb em outra (ex.: produção), por exemplo pelo APSDU, sem
+  exportar a tabela inteira.
+- Tipos pelo dicionário (SX3). Nomes de campo com até 10 caracteres (o APSDU e
+  o Protheus têm o mesmo limite); texto acima de 254 posições vira memo.
+- Colunas de controle da consulta (R_E_C_N_O_, D_E_L_E_T_, R_E_C_D_E_L_) não
+  viram campos: o arquivo tem as suas.
+- Registros excluídos: o Protheus não devolve a coluna D_E_L_E_T_ numa
+  consulta, então, sem nada a mais, todos os registros entram ativos. Para
+  levar a marca de exclusão, traga a coluna com o nome EXP_DEL; a linha com
+  '*' entra excluída no .sdb (como no APSDU) e EXP_DEL não vira campo:
+    SELECT SX6.*, D_E_L_E_T_ AS EXP_DEL FROM SX6990 SX6
+  Para levar só os ativos, filtre: WHERE D_E_L_E_T_ = ' '.
+- Textos gravados como no Protheus (código de página do Windows, completados
+  com espaços). Em ferramentas de fora do Protheus os acentos aparecem trocados.
 - Ao lado, um .txt (UTF-8) com data/hora, usuário, empresa/filial, número de
   linhas, a query original e o SQL executado.
 
@@ -116,7 +129,7 @@ Na estação do usuário:
   para o banco do seu ambiente.
 - Planilha: limite do Excel de 1.048.576 linhas por aba (a rotina abre novas
   abas) e de 32.767 caracteres por célula. Volumes muito grandes levam tempo
-  (a geração do .xlsx é a etapa mais lenta). O formato SQLite não tem esses
+  (a geração do .xlsx é a etapa mais lenta). O formato .sdb não tem esses
   limites e é bem mais rápido.
 - Memo virtual (texto gravado na tabela SYP): a consulta traz só o código do
   memo, em qualquer formato. Para o texto, junte a SYP no próprio SQL.
