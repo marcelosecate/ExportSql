@@ -1,0 +1,133 @@
+﻿ExportSql v1.0 - consultas SQL dentro do Protheus, com exportação para Excel ou SQLite
+====================================================================================
+
+Autor: Marcelo Spilares Secate
+Contato: marcelo.spilares@gmail.com | WhatsApp (41) 9.9191-1341
+Testado em: Protheus 12.1.2510 com SQL Server, SmartClient webapp
+
+
+1. O QUE É
+----------
+Rotina para Protheus que executa consultas SQL (arquivo .sql ou query colada)
+e entrega o resultado em planilhas .xlsx (uma por consulta, com a query
+documentada numa aba), em bancos SQLite .db (um por consulta, com a query num
+.txt ao lado) ou numa grade na tela.
+
+Recursos principais:
+- Somente consultas: comandos de alteração (INSERT, UPDATE, DELETE, DROP...)
+  são bloqueados.
+- Datas e números tipados pelo dicionário (SX3).
+- Ajuste automático de nomes de tabela entre empresas.
+- Editor com cores no estilo do SQL Server Management Studio e botão Formatar.
+- Conversão de query para código AdvPL (String, BeginSql ou FWExecStatement)
+  e o caminho inverso (extrai o SQL de um trecho de fonte).
+- Acesso com usuário e senha do Protheus, restrito ao grupo Administradores
+  (000000), com auditoria de cada execução.
+
+
+2. CONTEÚDO DO PACOTE
+---------------------
+- Patch exportsql_v1_0.ptm com os programas da rotina:
+  SPILR01 (programa inicial), SPILT01 (tela) e SPILC01 a SPILC07 (classes,
+  namespace spilsoft.expsql), mais o recurso de imagem spilsoft_expsql.png
+  (logo nos créditos da tela). Gerado no Protheus 12.1.2510, AppServer build
+  7.00.240223P.
+- Este LEIA-ME.
+
+Além do logo (spilsoft_expsql.png, que vai no patch), a rotina usa só imagens
+que já existem no RPO padrão; não há tabelas, campos nem parâmetros (SX) para
+criar.
+
+
+3. INSTALAÇÃO
+-------------
+1) Faça um backup do RPO do ambiente.
+2) Aplique o patch exportsql_v1_0.ptm no ambiente, pela ferramenta que você
+   já usa para isso (VS Code com a extensão TOTVS ou TOTVS Developer Studio).
+3) Confira se o patch foi aplicado: no SmartClient, rode U_SPILR01 como
+   programa inicial (item 4) e veja se a tela abre.
+
+
+4. COMO EXECUTAR
+----------------
+A rotina é um PROGRAMA INICIAL: abre a tela sem ambiente e monta o ambiente
+depois do login. Não a coloque no menu do Protheus.
+
+- SmartClient desktop: Programa inicial = U_SPILR01
+- Webapp: na tela "Parâmetros Iniciais", Programa Inicial = U_SPILR01
+
+Na tela:
+1) Em "Ambiente", informe empresa, filial, usuário e senha do Protheus.
+   O usuário precisa pertencer ao grupo Administradores (000000).
+2) Escolha o que executar: "Arquivo .sql" ou "Query colada".
+3) Escolha o Formato (Excel .xlsx ou SQLite .db) e informe a pasta de
+   destino (ou marque "Visualizar" para ver o resultado na tela).
+4) Clique em Executar.
+
+Em arquivos .sql com várias consultas, separe as consultas com ";".
+
+Nome dos arquivos gerados:
+  SIGLA_EMP_FIL_<origem>_Q<n>[_<título>]_<data>_<hora>.xlsx (ou .db e .txt)
+  Ex.: SB1_99_01_colado_Q1_20261003_235458.db
+  A sigla vem da 1ª tabela da consulta no padrão Protheus (SB1990 -> SB1).
+  Consulta sem tabela nesse padrão: o nome começa pela origem.
+
+Formato SQLite:
+- Um arquivo .db por consulta, com o resultado na tabela CONSULTA (colunas
+  com os mesmos nomes da planilha). Abre em ferramentas como o DB Browser for
+  SQLite ou o sqlite3.
+- Tipos pelo dicionário (SX3): texto e memo como TEXT (inteiros, sem o limite
+  de 32.767 caracteres da célula do Excel), números como INTEGER ou REAL,
+  datas como texto AAAA-MM-DD (data vazia fica nula).
+- Ao lado, um .txt (UTF-8) com data/hora, usuário, empresa/filial, número de
+  linhas, a query original e o SQL executado.
+
+
+5. SEGURANÇA
+------------
+- A senha nunca é gravada. O histórico guarda só o usuário, a empresa/filial,
+  as pastas e as últimas opções.
+- RECOMENDAÇÃO: configure o DBAccess usado pela rotina com um usuário de banco
+  SOMENTE LEITURA. O bloqueio de comandos de alteração é uma barreira a mais,
+  não uma garantia.
+- Auditoria: cada consulta executada gera uma linha (data, hora, usuário,
+  máquina, IP, empresa, filial, SQL, status, linhas e saída) em
+  \expsql\auditoria\AAAAMM.log no servidor. O conteúdo fica embaralhado para
+  não ser lido num editor de texto; para consultar, use o botão "Auditoria" da
+  tela (exige login de administrador).
+
+
+6. ARQUIVOS E PASTAS CRIADOS
+----------------------------
+No servidor (abaixo do RootPath do ambiente):
+- \expsql\tmp\        planilhas temporárias (apagadas após a entrega)
+- \expsql\falhas\     planilha mantida quando a cópia para o destino falha
+- \expsql\auditoria\  auditoria mensal (AAAAMM.log)
+
+Na estação do usuário:
+- %LOCALAPPDATA%\SpilSoft\ExpSql\historico.json  (histórico da tela)
+
+
+7. LIMITAÇÕES CONHECIDAS
+------------------------
+- Validado no SmartClient webapp com WebAgent. O modo webapp SEM WebAgent
+  (download pelo navegador) ainda não foi testado.
+- Testado apenas com SQL Server. A rotina não converte sintaxe: escreva o SQL
+  para o banco do seu ambiente.
+- Planilha: limite do Excel de 1.048.576 linhas por aba (a rotina abre novas
+  abas) e de 32.767 caracteres por célula. Volumes muito grandes levam tempo
+  (a geração do .xlsx é a etapa mais lenta). O formato SQLite não tem esses
+  limites e é bem mais rápido.
+- Memo virtual (texto gravado na tabela SYP): a consulta traz só o código do
+  memo, em qualquer formato. Para o texto, junte a SYP no próprio SQL.
+- Visualizar na tela mostra até 10.000 linhas.
+- No webapp, depois de digitar na query colada, o primeiro clique num botão
+  pode não ser executado; clique em outro campo antes, ou clique de novo.
+- No webapp, o combo Formato pode não aceitar o clique na opção da lista
+  aberta; selecione com as setas do teclado e Enter.
+
+
+8. SUPORTE
+----------
+A rotina é gratuita e fornecida como está, sem garantia. Dúvidas, sugestões e
+problemas: marcelo.spilares@gmail.com ou WhatsApp (41) 9.9191-1341.

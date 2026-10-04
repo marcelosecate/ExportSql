@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ExportSql para Protheus</title>
+<link rel="icon" href="favicon.ico?v=2" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=2">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=2">
+<meta name="description" content="ExportSql: consultas SQL dentro do Protheus, com exportação para Excel ou SQLite, visualização na tela, editor com cores e conversão para AdvPL. Gratuito.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #f4f7fb;
+    --text: #14213d;
+    --muted: #55617a;
+    --line: #dde3ec;
+    --brand: #1f5fa8;
+    --brand-dark: #174a84;
+    --brand-soft: #e6eef8;
+    --ok: #1e8e5a;
+    --card: #ffffff;
+    --shadow: 0 10px 30px rgba(20, 33, 61, .10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1522;
+      --bg-soft: #151d2e;
+      --text: #e8edf6;
+      --muted: #a3afc4;
+      --line: #27324a;
+      --brand: #5b9be0;
+      --brand-dark: #7fb2ea;
+      --brand-soft: #1b2a44;
+      --ok: #4cc28b;
+      --card: #172033;
+      --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1522;
+    --bg-soft: #151d2e;
+    --text: #e8edf6;
+    --muted: #a3afc4;
+    --line: #27324a;
+    --brand: #5b9be0;
+    --brand-dark: #7fb2ea;
+    --brand-soft: #1b2a44;
+    --ok: #4cc28b;
+    --card: #172033;
+    --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.6;
+  }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: var(--brand); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+  /* topo */
+  header.top {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; color: var(--text); text-decoration: none; }
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: 8px; background: var(--brand); color: #fff;
+    display: grid; place-items: center; font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 500;
+  }
+  .logo-by { display: flex; align-items: center; gap: 10px; margin-left: 6px; font-size: 13px; font-weight: 500; color: var(--muted); }
+  .logo-by img { width: 44px; height: 44px; border-radius: 10px; }
+  .logo-by strong { font-size: 18px; font-weight: 800; color: var(--text); }
+  nav.links { display: flex; gap: 22px; }
+  nav.links a { color: var(--muted); text-decoration: none; font-size: 15px; font-weight: 500; }
+  nav.links a:hover { color: var(--text); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 10px;
+    font-weight: 600; font-size: 15px; text-decoration: none; border: 1px solid transparent; cursor: pointer;
+  }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-dark); }
+  .btn-ghost { border-color: var(--line); color: var(--text); background: var(--card); }
+  .btn-ghost:hover { border-color: var(--brand); }
+  .btn-sm { padding: 8px 16px; font-size: 14px; }
+
+  /* hero */
+  .hero { padding: 72px 0 40px; background: linear-gradient(180deg, var(--bg-soft), var(--bg)); }
+  .hero .wrap { display: grid; grid-template-columns: 1fr; gap: 40px; }
+  .eyebrow {
+    display: inline-block; padding: 4px 12px; border-radius: 999px; background: var(--brand-soft); color: var(--brand);
+    font-size: 13px; font-weight: 600; letter-spacing: .02em;
+  }
+  .hero h1 { font-size: clamp(32px, 5vw, 52px); line-height: 1.12; margin: 16px 0 16px; letter-spacing: -.02em; }
+  .hero h1 span { color: var(--brand); }
+  .hero p.lead { font-size: clamp(17px, 2vw, 20px); color: var(--muted); max-width: 720px; margin: 0 0 28px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-meta { margin-top: 18px; color: var(--muted); font-size: 14px; }
+  .shot {
+    border-radius: 12px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); background: #fff;
+  }
+  .hero .shot { max-width: 980px; margin: 0 auto; width: 100%; }
+
+  /* seções */
+  section { padding: 72px 0; }
+  section.alt { background: var(--bg-soft); }
+  .sec-head { max-width: 720px; margin-bottom: 36px; }
+  .sec-head h2 { font-size: clamp(26px, 3.4vw, 36px); line-height: 1.2; margin: 0 0 10px; letter-spacing: -.01em; }
+  .sec-head p { color: var(--muted); margin: 0; font-size: 17px; }
+
+  .pain { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .pain div { padding: 20px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); }
+  .pain strong { display: block; margin-bottom: 6px; }
+  .pain span { color: var(--muted); font-size: 15px; }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+  .feature { padding: 24px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+  .feature .ico {
+    width: 40px; height: 40px; border-radius: 10px; background: var(--brand-soft); color: var(--brand);
+    display: grid; place-items: center; margin-bottom: 14px;
+  }
+  .feature .ico svg { width: 22px; height: 22px; }
+  .feature h3 { margin: 0 0 6px; font-size: 18px; }
+  .feature p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  .showcase { display: grid; grid-template-columns: 1fr; gap: 48px; }
+  .show-item { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: center; }
+  .show-item h3 { font-size: 22px; margin: 0 0 8px; }
+  .show-item p { color: var(--muted); margin: 0 0 12px; }
+  .show-item ul { margin: 0; padding-left: 20px; color: var(--muted); }
+  .show-item li { margin-bottom: 4px; }
+
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; counter-reset: step; }
+  .step { position: relative; padding: 24px 20px 20px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+  .step::before {
+    counter-increment: step; content: counter(step);
+    width: 34px; height: 34px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700;
+    display: grid; place-items: center; margin-bottom: 12px;
+  }
+  .step h3 { margin: 0 0 6px; font-size: 17px; }
+  .step p { margin: 0; color: var(--muted); font-size: 15px; }
+  code {
+    font-family: "JetBrains Mono", monospace; font-size: .92em; background: var(--brand-soft); color: var(--brand);
+    padding: 1px 6px; border-radius: 5px;
+  }
+
+  .security { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .security div { padding: 20px; border-left: 3px solid var(--ok); background: var(--card); border-radius: 0 12px 12px 0; }
+  .security strong { display: block; margin-bottom: 4px; }
+  .security span { color: var(--muted); font-size: 15px; }
+
+  .download {
+    text-align: center; padding: 48px 24px; border-radius: 18px; background: var(--brand); color: #fff;
+  }
+  .download h2 { margin: 0 0 10px; font-size: clamp(26px, 3.4vw, 36px); }
+  .download p { margin: 0 auto 24px; max-width: 620px; opacity: .92; }
+  .download .btn-primary { background: #fff; color: #174a84; }
+  .download .btn-primary:hover { background: #eef4fb; }
+  .download small { display: block; margin-top: 16px; opacity: .85; }
+
+  .about { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; }
+  .avatar { width: 88px; height: 88px; border-radius: 18px; }
+  .company { font-weight: 600; color: var(--brand); }
+  .about h3 { margin: 0 0 4px; font-size: 22px; }
+  .about p { margin: 0 0 12px; color: var(--muted); }
+  .contacts { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .faq details { border-bottom: 1px solid var(--line); padding: 16px 0; }
+  .faq summary { cursor: pointer; font-weight: 600; font-size: 17px; }
+  .faq details p { color: var(--muted); margin: 10px 0 0; }
+
+  footer { padding: 32px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+  .foot-brand { display: flex; align-items: center; gap: 10px; }
+  .foot-brand img { width: 28px; height: 28px; border-radius: 6px; }
+
+  @media (min-width: 900px) {
+    .show-item { grid-template-columns: 1.4fr 1fr; gap: 40px; }
+    .show-item.rev { grid-template-columns: 1fr 1.4fr; }
+    .show-item.rev .shot { order: 2; }
+  }
+  @media (max-width: 920px) {
+    .logo-by { display: none; }
+  }
+  @media (max-width: 720px) {
+    nav.links { display: none; }
+    .hero { padding-top: 44px; }
+    section { padding: 52px 0; }
+    .about { grid-template-columns: 1fr; text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#"><span class="logo-mark">SQL</span>ExportSql<span class="logo-by">por <img src="img/spilsoft-logo-132.png" width="44" height="44" alt=""><strong>SpilSoft</strong></span></a>
+    <nav class="links">
+      <a href="#recursos">Recursos</a>
+      <a href="#telas">Telas</a>
+      <a href="#seguranca">Segurança</a>
+      <a href="#instalacao">Instalação</a>
+      <a href="#faq">Dúvidas</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="#download">Baixar grátis</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Para TOTVS Protheus · Gratuito</span>
+        <h1>Consultas SQL dentro do Protheus,<br><span>direto para Excel ou SQLite.</span></h1>
+        <p class="lead">Sem acesso direto ao banco? Com o ExportSql você roda suas consultas de dentro do próprio ERP, vê o resultado na tela ou gera, por consulta, uma planilha .xlsx ou um banco SQLite .db, com segurança e auditoria.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#download">Baixar o patch</a>
+          <a class="btn btn-ghost" href="#telas">Ver as telas</a>
+        </div>
+        <p class="hero-meta">Testado no Protheus 12.1.2510 com SQL Server.</p>
+      </div>
+      <div class="shot">
+        <img src="img/tela-principal.png" width="1108" height="803" alt="Tela principal do ExportSql com uma consulta colorida no editor">
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Uma consulta rápida não devia virar uma novela</h2>
+        <p>Em ambientes como o T-Cloud, ou em clientes onde a infraestrutura não é sua, conferir um dado no banco costuma depender de terceiros.</p>
+      </div>
+      <div class="pain">
+        <div><strong>Sem acesso ao banco</strong><span>Nada de SQL Server Management Studio ou conexão direta no ambiente do cliente.</span></div>
+        <div><strong>Chamado para tudo</strong><span>Uma simples conferência vira pedido para a infraestrutura e espera.</span></div>
+        <div><strong>Resultado difícil de compartilhar</strong><span>Copiar dados da tela para o Excel na mão, sem tipos nem formatação.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="recursos">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Tudo o que você precisa para consultar com tranquilidade</h2>
+        <p>A rotina roda no próprio Protheus, pelo SmartClient ou pelo webapp.</p>
+      </div>
+      <div class="features">
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13l3 4m0-4l-3 4m6-4h3m-3 4h3"/></svg></div>
+          <h3>Excel ou SQLite</h3>
+          <p>Um arquivo .sql com várias consultas gera um arquivo para cada uma: .xlsx com a query documentada numa aba, ou .db (SQLite) com a query num .txt ao lado.</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg></div>
+          <h3>Resultado na tela</h3>
+          <p>Marque "Visualizar" e veja até 10.000 linhas numa grade em tela cheia, sem abrir o Excel.</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+          <h3>Editor com cores</h3>
+          <p>Cores no estilo do SQL Server Management Studio e botão Formatar para deixar a query legível.</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></div>
+          <h3>Query ↔ AdvPL</h3>
+          <p>Gera o código em String, BeginSql ou FWExecStatement. E faz o caminho inverso: cola o trecho do fonte e extrai o SQL limpo.</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg></div>
+          <h3>Tipos pelo dicionário</h3>
+          <p>Datas e números chegam no Excel e no SQLite com o tipo certo, lidos da SX3.</p>
+        </div>
+        <div class="feature">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div>
+          <h3>Ajuste de tabelas</h3>
+          <p>Query escrita para SB1010 na empresa 99? A rotina ajusta o nome da tabela para a empresa atual.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="telas">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Veja como funciona</h2>
+        <p>Prints da rotina rodando no webapp do Protheus.</p>
+      </div>
+      <div class="showcase">
+        <div class="show-item">
+          <div class="shot"><img src="img/tela-principal.png" width="1108" height="803" loading="lazy" alt="Tela principal do ExportSql"></div>
+          <div>
+            <h3>Uma tela, do ambiente à saída</h3>
+            <p>Tudo organizado em três blocos: ambiente, consultas e saída.</p>
+            <ul>
+              <li>Login com usuário do Protheus e escolha de empresa e filial</li>
+              <li>Execute um arquivo .sql ou uma query colada</li>
+              <li>Histórico de pastas, arquivos e opções</li>
+              <li>Saída em Excel, SQLite ou na tela</li>
+            </ul>
+          </div>
+        </div>
+        <div class="show-item rev">
+          <div class="shot"><img src="img/gerar-advpl.png" width="1110" height="632" loading="lazy" alt="Janela com o código AdvPL gerado no formato FWExecStatement"></div>
+          <div>
+            <h3>Da query para o fonte em um clique</h3>
+            <p>Escolha o formato e copie o código pronto para colar no seu fonte.</p>
+            <ul>
+              <li>Tabela física vira <code>RetSqlName</code></li>
+              <li>Valores fixos viram parâmetros do FWExecStatement</li>
+              <li>Também em String ou BeginSql</li>
+            </ul>
+          </div>
+        </div>
+        <!-- espaço para mais prints: grade de resultado, planilha gerada e auditoria (img/*.png) -->
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="seguranca">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Feito para facilitar, com segurança</h2>
+        <p>A rotina é uma ferramenta de administrador. Por isso nasceu com controle de acesso e rastreabilidade.</p>
+      </div>
+      <div class="security">
+        <div><strong>Somente consultas</strong><span>INSERT, UPDATE, DELETE, DROP e outros comandos de alteração são bloqueados.</span></div>
+        <div><strong>Login do Protheus</strong><span>Acesso restrito ao grupo Administradores (000000). A senha nunca é gravada.</span></div>
+        <div><strong>Auditoria de cada execução</strong><span>Quem, quando, de qual máquina, qual SQL e qual resultado, num arquivo mensal no servidor.</span></div>
+        <div><strong>Recomendação</strong><span>Use no DBAccess um usuário de banco somente leitura: o bloqueio da rotina é uma barreira a mais.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="instalacao">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Instalação em quatro passos</h2>
+        <p>Não há tabelas, campos nem parâmetros para criar.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><h3>Baixe o patch</h3><p>O pacote traz o patch e o LEIA-ME com todos os detalhes.</p></div>
+        <div class="step"><h3>Aplique no RPO</h3><p>Faça backup do RPO e aplique o patch com a ferramenta que você já usa.</p></div>
+        <div class="step"><h3>Abra a rotina</h3><p>No SmartClient ou no webapp, use o programa inicial <code>U_SPILR01</code>.</p></div>
+        <div class="step"><h3>Entre e consulte</h3><p>Informe empresa, filial e um usuário do grupo Administradores.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="wrap">
+      <div class="download">
+        <h2>Baixe o ExportSql</h2>
+        <p>Gratuito. Se for útil para você, compartilhe com quem trabalha com Protheus e me conte o que achou.</p>
+        <a class="btn btn-primary" href="https://github.com/marcelosecate/ExportSql/raw/main/download/exportsql_v1_0.ptm" id="link-download">Baixar o patch</a>
+        <p><a href="https://github.com/marcelosecate/ExportSql/blob/main/LEIA-ME.txt" target="_blank" rel="noopener" style="color:inherit">Ler o LEIA-ME (instalação)</a></p>
+        <small>Versão 1.0 · Protheus 12.1.2510 · SQL Server</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <div class="about">
+        <img class="avatar" src="img/spilsoft-256.png" width="88" height="88" alt="Logo da SpilSoft">
+        <div>
+          <h3>Marcelo Spilares Secate · <span class="company">SpilSoft</span></h3>
+          <p>Desenvolvedor Protheus · AdvPL/TLPP. O ExportSql foi desenvolvido com IA como par de programação, com especificação, revisão de cada linha e testes no ambiente real.</p>
+          <div class="contacts">
+            <a class="btn btn-ghost btn-sm" href="mailto:marcelo.spilares@gmail.com">marcelo.spilares@gmail.com</a>
+            <a class="btn btn-ghost btn-sm" href="https://wa.me/5541991911341" target="_blank" rel="noopener">WhatsApp (41) 9.9191-1341</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Dúvidas frequentes</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>É gratuito mesmo?</summary>
+          <p>Sim. A rotina é gratuita e fornecida como está, sem garantia.</p>
+        </details>
+        <details>
+          <summary>Funciona com outros bancos além do SQL Server?</summary>
+          <p>A rotina executa o SQL pelo DBAccess e não converte sintaxe: escreva a consulta para o banco do seu ambiente. Até agora ela foi testada com SQL Server.</p>
+        </details>
+        <details>
+          <summary>Por que exportar para SQLite?</summary>
+          <p>O arquivo .db não tem o limite de linhas por aba nem o corte de 32.767 caracteres por célula do Excel, é gerado bem mais rápido e pode ser consultado com SQL em ferramentas como o DB Browser for SQLite. Um .txt ao lado guarda a query executada.</p>
+        </details>
+        <details>
+          <summary>Preciso criar tabelas ou campos no dicionário?</summary>
+          <p>Não. Basta aplicar o patch no RPO.</p>
+        </details>
+        <details>
+          <summary>Qualquer usuário pode usar?</summary>
+          <p>Não. Só usuários do grupo Administradores (000000) conseguem entrar, e cada execução fica registrada na auditoria.</p>
+        </details>
+        <details>
+          <summary>Dá para alterar dados no banco por ela?</summary>
+          <p>Não. Comandos de alteração são bloqueados. Mesmo assim, recomendamos um usuário de banco somente leitura no DBAccess.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="foot-brand"><img src="img/spilsoft-256.png" width="28" height="28" alt="SpilSoft">ExportSql v1.0 · 2026 · Marcelo Spilares Secate · SpilSoft</span>
+    <span>Protheus e TOTVS são marcas da TOTVS S.A. Este projeto não é afiliado à TOTVS.</span>
+  </div>
+</footer>
+
+</body>
+</html>
