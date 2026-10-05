@@ -86,9 +86,12 @@ Formato SQLite Protheus (.sdb):
   viram campos: o arquivo tem as suas.
 - Registros excluídos: o Protheus não devolve a coluna D_E_L_E_T_ numa
   consulta, então, sem nada a mais, todos os registros entram ativos. Para
-  levar a marca de exclusão, traga a coluna com o nome EXP_DEL; a linha com
-  '*' entra excluída no .sdb (como no APSDU) e EXP_DEL não vira campo:
-    SELECT SX6.*, D_E_L_E_T_ AS EXP_DEL FROM SX6990 SX6
+  levar a marca de exclusão, traga a coluna com o nome E_X_P_O_R_T_D_E_L; a
+  linha com '*' entra excluída no .sdb (como no APSDU) e a coluna não vira
+  campo. O .txt informa quantos registros foram excluídos:
+    SELECT SX6.*, D_E_L_E_T_ AS E_X_P_O_R_T_D_E_L FROM SX6990 SX6
+  A coluna só vale como marca se for texto de 1 posição (como o D_E_L_E_T_);
+  com outro tipo ou tamanho ela é gravada como campo comum, e o .txt avisa.
   Para levar só os ativos, filtre: WHERE D_E_L_E_T_ = ' '.
 - Textos gravados como no Protheus (código de página do Windows, completados
   com espaços). Em ferramentas de fora do Protheus os acentos aparecem trocados.
