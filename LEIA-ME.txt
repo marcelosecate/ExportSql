@@ -1,4 +1,4 @@
-﻿ExportSql v1.0 - consultas SQL dentro do Protheus, com exportação para Excel ou .sdb
+﻿ExportSql v1.2 - consultas SQL dentro do Protheus, com exportação para Excel ou .sdb
 ==================================================================================
 
 Autor: Marcelo Spilares Secate
@@ -24,11 +24,13 @@ Recursos principais:
   e o caminho inverso (extrai o SQL de um trecho de fonte).
 - Acesso com usuário e senha do Protheus, restrito ao grupo Administradores
   (000000), com auditoria de cada execução.
+- Queries salvas com nome (salvar, renomear e excluir), para usar de novo.
+- Usuário, empresa e filial lembrados para cada servidor e ambiente.
 
 
 2. CONTEÚDO DO PACOTE
 ---------------------
-- Patch exportsql_v1_0.ptm com os programas da rotina:
+- Patch exportsql_v1_2.ptm com os programas da rotina:
   SPILR01 (programa inicial), SPILT01 (tela) e SPILC01 a SPILC07 (classes,
   namespace spilsoft.expsql), mais o recurso de imagem spilsoft_expsql.png
   (logo nos créditos da tela). Gerado no Protheus 12.1.2510, AppServer build
@@ -43,7 +45,7 @@ criar.
 3. INSTALAÇÃO
 -------------
 1) Faça um backup do RPO do ambiente.
-2) Aplique o patch exportsql_v1_0.ptm no ambiente, pela ferramenta que você
+2) Aplique o patch exportsql_v1_2.ptm no ambiente, pela ferramenta que você
    já usa para isso (VS Code com a extensão TOTVS ou TOTVS Developer Studio).
 3) Confira se o patch foi aplicado: no SmartClient, rode U_SPILR01 como
    programa inicial (item 4) e veja se a tela abre.
@@ -57,13 +59,20 @@ depois do login. Não a coloque no menu do Protheus.
 - SmartClient desktop: Programa inicial = U_SPILR01
 - Webapp: na tela "Parâmetros Iniciais", Programa Inicial = U_SPILR01
 
+A tela tem três seções (Ambiente, Consultas e Saída); uma fica aberta por vez.
+
 Na tela:
 1) Em "Ambiente", informe empresa, filial, usuário e senha do Protheus.
-   O usuário precisa pertencer ao grupo Administradores (000000).
-2) Escolha o que executar: "Arquivo .sql" ou "Query colada".
-3) Escolha o Formato (Excel .xlsx ou SQLite Protheus .sdb) e informe a pasta de
-   destino (ou marque "Visualizar" para ver o resultado na tela).
-4) Clique em Executar.
+   O usuário precisa pertencer ao grupo Administradores (000000). O botão
+   Conectar faz o login na hora; sem ele, o login é feito no Executar.
+2) Em "Consultas", escolha o que executar ("Arquivo .sql" ou "Query colada"),
+   o Formato (Excel .xlsx ou SQLite Protheus .sdb) e, se quiser, marque
+   "Visualizar na tela" ou "Ajustar nomes de tabela ao falhar".
+3) Em "Saída", informe a pasta de destino (não é preciso com "Visualizar").
+4) Clique em Executar. O resumo da execução tem o botão Copiar.
+
+Queries salvas: na linha da query colada, o combo "(queries salvas)" e os
+botões Salvar, Renomear e Excluir guardam a query do editor com um nome.
 
 Em arquivos .sql com várias consultas, separe as consultas com ";".
 
@@ -101,8 +110,9 @@ Formato SQLite Protheus (.sdb):
 
 5. SEGURANÇA
 ------------
-- A senha nunca é gravada. O histórico guarda só o usuário, a empresa/filial,
-  as pastas e as últimas opções.
+- A senha nunca é gravada. O histórico guarda só o usuário e a empresa/filial
+  (de cada servidor e ambiente), as pastas, as queries salvas e as últimas
+  opções.
 - RECOMENDAÇÃO: configure o DBAccess usado pela rotina com um usuário de banco
   SOMENTE LEITURA. O bloqueio de comandos de alteração é uma barreira a mais,
   não uma garantia.
@@ -143,7 +153,24 @@ Na estação do usuário:
   aberta; selecione com as setas do teclado e Enter.
 
 
-8. SUPORTE
+8. VERSÕES
+----------
+v1.2 (outubro/2026)
+- Queries salvas com nome na linha da query colada.
+- Tela em três seções (Ambiente, Consultas e Saída), com botão Conectar; as
+  opções da execução ficam em Consultas.
+- Usuário, empresa e filial lembrados para cada servidor e ambiente.
+- Botão Copiar no resumo da execução.
+- Formatar: colunas simples na linha do SELECT, ON na linha do JOIN e
+  subqueries (EXISTS/NOT EXISTS) formatadas.
+- Grade de resultado: números alinhados à direita, demais tipos à esquerda.
+- Barras de rolagem na query colada; correção no combo de queries salvas.
+
+v1.0 (outubro/2026)
+- Primeira versão publicada.
+
+
+9. SUPORTE
 ----------
 A rotina é gratuita e fornecida como está, sem garantia. Dúvidas, sugestões e
 problemas: marcelo.spilares@gmail.com ou WhatsApp (41) 9.9191-1341.
