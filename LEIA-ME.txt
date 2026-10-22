@@ -1,4 +1,4 @@
-﻿ExportSql v1.2 - consultas SQL dentro do Protheus, com exportação para Excel ou .sdb
+﻿ExportSql v1.4 - consultas SQL dentro do Protheus, com exportação para Excel ou .sdb
 ==================================================================================
 
 Autor: Marcelo Spilares Secate
@@ -25,12 +25,13 @@ Recursos principais:
 - Acesso com usuário e senha do Protheus, restrito ao grupo Administradores
   (000000), com auditoria de cada execução.
 - Queries salvas com nome (salvar, renomear e excluir), para usar de novo.
-- Usuário, empresa e filial lembrados para cada servidor e ambiente.
+- Usuário, empresa, filial e opções da tela lembrados para cada servidor e
+  ambiente.
 
 
 2. CONTEÚDO DO PACOTE
 ---------------------
-- Patch exportsql_v1_2.ptm com os programas da rotina:
+- Patch exportsql_v1_4.ptm com os programas da rotina:
   SPILR01 (programa inicial), SPILT01 (tela) e SPILC01 a SPILC07 (classes,
   namespace spilsoft.expsql), mais o recurso de imagem spilsoft_expsql.png
   (logo nos créditos da tela). Gerado no Protheus 12.1.2510, AppServer build
@@ -45,7 +46,7 @@ criar.
 3. INSTALAÇÃO
 -------------
 1) Faça um backup do RPO do ambiente.
-2) Aplique o patch exportsql_v1_2.ptm no ambiente, pela ferramenta que você
+2) Aplique o patch exportsql_v1_4.ptm no ambiente, pela ferramenta que você
    já usa para isso (VS Code com a extensão TOTVS ou TOTVS Developer Studio).
 3) Confira se o patch foi aplicado: no SmartClient, rode U_SPILR01 como
    programa inicial (item 4) e veja se a tela abre.
@@ -69,7 +70,8 @@ Na tela:
    o Formato (Excel .xlsx ou SQLite Protheus .sdb) e, se quiser, marque
    "Visualizar na tela" ou "Ajustar nomes de tabela ao falhar".
 3) Em "Saída", informe a pasta de destino (não é preciso com "Visualizar").
-4) Clique em Executar. O resumo da execução tem o botão Copiar.
+4) Clique em Executar. O resumo da execução tem o botão Copiar e a opção
+   "Abrir a pasta de destino ao fechar" (fica gravada).
 
 Queries salvas: na linha da query colada, o combo "(queries salvas)" e os
 botões Salvar, Renomear e Excluir guardam a query do editor com um nome.
@@ -110,9 +112,9 @@ Formato SQLite Protheus (.sdb):
 
 5. SEGURANÇA
 ------------
-- A senha nunca é gravada. O histórico guarda só o usuário e a empresa/filial
-  (de cada servidor e ambiente), as pastas, as queries salvas e as últimas
-  opções.
+- A senha nunca é gravada. O histórico guarda só o usuário, a empresa/filial
+  e as últimas opções (de cada servidor e ambiente), as pastas e as queries
+  salvas.
 - RECOMENDAÇÃO: configure o DBAccess usado pela rotina com um usuário de banco
   SOMENTE LEITURA. O bloqueio de comandos de alteração é uma barreira a mais,
   não uma garantia.
@@ -155,6 +157,12 @@ Na estação do usuário:
 
 8. VERSÕES
 ----------
+v1.4 (outubro/2026)
+- Opções da tela (formato, o que executar, visualizar, ajuste de tabelas,
+  linha AdvPL e seção aberta) lembradas para cada servidor e ambiente.
+- Resumo da execução com a opção "Abrir a pasta de destino ao fechar", que
+  fica gravada.
+
 v1.2 (outubro/2026)
 - Queries salvas com nome na linha da query colada.
 - Tela em três seções (Ambiente, Consultas e Saída), com botão Conectar; as

@@ -8,7 +8,7 @@ Consultas SQL dentro do TOTVS Protheus, com exportação para **Excel (.xlsx)** 
 
 ## Download
 
-- Patch: [download/exportsql_v1_2.ptm](https://github.com/marcelosecate/ExportSql/raw/main/download/exportsql_v1_2.ptm)
+- Patch: [download/exportsql_v1_4.ptm](https://github.com/marcelosecate/ExportSql/raw/main/download/exportsql_v1_4.ptm)
 - Instalação e uso: [LEIA-ME.txt](LEIA-ME.txt)
 
 Testado no Protheus 12.1.2510 (AppServer 7.00.240223P) com SQL Server, pelo SmartClient webapp.
@@ -25,15 +25,20 @@ Testado no Protheus 12.1.2510 (AppServer 7.00.240223P) com SQL Server, pelo Smar
 - Somente consultas: comandos de alteração são bloqueados.
 - Datas e números tipados pelo dicionário (SX3) e ajuste automático de nomes de tabela entre empresas.
 - Acesso com usuário e senha do Protheus, restrito ao grupo Administradores, com auditoria de cada execução.
-- Usuário, empresa e filial lembrados para cada servidor e ambiente (a senha nunca é gravada).
+- Usuário, empresa, filial e opções da tela lembrados para cada servidor e ambiente (a senha nunca é gravada).
 
 ## Como usar
 
-1. Faça backup do RPO e aplique o patch `exportsql_v1_2.ptm`.
+1. Faça backup do RPO e aplique o patch `exportsql_v1_4.ptm`.
 2. No SmartClient ou no webapp, informe o programa inicial `U_SPILR01`.
 3. Entre com empresa, filial e um usuário do grupo Administradores.
 
 Detalhes, segurança e limitações conhecidas no [LEIA-ME.txt](LEIA-ME.txt).
+
+## Novidades da v1.4
+
+- Opções da tela (formato, o que executar, visualizar, ajuste de tabelas, linha AdvPL e seção aberta) lembradas para cada servidor e ambiente.
+- Resumo da execução com a opção "Abrir a pasta de destino ao fechar", que fica gravada.
 
 ## Novidades da v1.2
 
