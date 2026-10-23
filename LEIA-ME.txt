@@ -1,4 +1,4 @@
-﻿ExportSql v1.4 - consultas SQL dentro do Protheus, com exportação para Excel ou .sdb
+﻿ExportSql v1.5 - consultas SQL dentro do Protheus, com exportação para Excel ou .sdb
 ==================================================================================
 
 Autor: Marcelo Spilares Secate
@@ -31,7 +31,7 @@ Recursos principais:
 
 2. CONTEÚDO DO PACOTE
 ---------------------
-- Patch exportsql_v1_4.ptm com os programas da rotina:
+- Patch exportsql_v1_5.ptm com os programas da rotina:
   SPILR01 (programa inicial), SPILT01 (tela) e SPILC01 a SPILC07 (classes,
   namespace spilsoft.expsql), mais o recurso de imagem spilsoft_expsql.png
   (logo nos créditos da tela). Gerado no Protheus 12.1.2510, AppServer build
@@ -46,7 +46,7 @@ criar.
 3. INSTALAÇÃO
 -------------
 1) Faça um backup do RPO do ambiente.
-2) Aplique o patch exportsql_v1_4.ptm no ambiente, pela ferramenta que você
+2) Aplique o patch exportsql_v1_5.ptm no ambiente, pela ferramenta que você
    já usa para isso (VS Code com a extensão TOTVS ou TOTVS Developer Studio).
 3) Confira se o patch foi aplicado: no SmartClient, rode U_SPILR01 como
    programa inicial (item 4) e veja se a tela abre.
@@ -60,7 +60,7 @@ depois do login. Não a coloque no menu do Protheus.
 - SmartClient desktop: Programa inicial = U_SPILR01
 - Webapp: na tela "Parâmetros Iniciais", Programa Inicial = U_SPILR01
 
-A tela tem três seções (Ambiente, Consultas e Saída); uma fica aberta por vez.
+A tela tem duas seções (Ambiente e Consultas); uma fica aberta por vez.
 
 Na tela:
 1) Em "Ambiente", informe empresa, filial, usuário e senha do Protheus.
@@ -69,7 +69,8 @@ Na tela:
 2) Em "Consultas", escolha o que executar ("Arquivo .sql" ou "Query colada"),
    o Formato (Excel .xlsx ou SQLite Protheus .sdb) e, se quiser, marque
    "Visualizar na tela" ou "Ajustar nomes de tabela ao falhar".
-3) Em "Saída", informe a pasta de destino (não é preciso com "Visualizar").
+3) Ainda em "Consultas", informe a pasta de destino (não é preciso com
+   "Visualizar").
 4) Clique em Executar. O resumo da execução tem o botão Copiar e a opção
    "Abrir a pasta de destino ao fechar" (fica gravada).
 
@@ -157,6 +158,11 @@ Na estação do usuário:
 
 8. VERSÕES
 ----------
+v1.5 (outubro/2026)
+- Tela em duas seções (Ambiente e Consultas): a pasta de destino e o botão
+  Auditoria passaram para Consultas, no lugar da pasta de origem (o arquivo
+  .sql já guarda o caminho completo).
+
 v1.4 (outubro/2026)
 - Opções da tela (formato, o que executar, visualizar, ajuste de tabelas,
   linha AdvPL e seção aberta) lembradas para cada servidor e ambiente.

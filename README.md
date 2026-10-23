@@ -8,7 +8,7 @@ Consultas SQL dentro do TOTVS Protheus, com exportação para **Excel (.xlsx)** 
 
 ## Download
 
-- Patch: [download/exportsql_v1_4.ptm](https://github.com/marcelosecate/ExportSql/raw/main/download/exportsql_v1_4.ptm)
+- Patch: [download/exportsql_v1_5.ptm](https://github.com/marcelosecate/ExportSql/raw/main/download/exportsql_v1_5.ptm)
 - Instalação e uso: [LEIA-ME.txt](LEIA-ME.txt)
 
 Testado no Protheus 12.1.2510 (AppServer 7.00.240223P) com SQL Server, pelo SmartClient webapp.
@@ -29,11 +29,15 @@ Testado no Protheus 12.1.2510 (AppServer 7.00.240223P) com SQL Server, pelo Smar
 
 ## Como usar
 
-1. Faça backup do RPO e aplique o patch `exportsql_v1_4.ptm`.
+1. Faça backup do RPO e aplique o patch `exportsql_v1_5.ptm`.
 2. No SmartClient ou no webapp, informe o programa inicial `U_SPILR01`.
 3. Entre com empresa, filial e um usuário do grupo Administradores.
 
 Detalhes, segurança e limitações conhecidas no [LEIA-ME.txt](LEIA-ME.txt).
+
+## Novidades da v1.5
+
+- Tela em duas seções (Ambiente e Consultas): a pasta de destino e o botão Auditoria passaram para Consultas, no lugar da pasta de origem (o arquivo .sql já guarda o caminho completo).
 
 ## Novidades da v1.4
 
