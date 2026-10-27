@@ -8,7 +8,7 @@ Consultas SQL dentro do TOTVS Protheus, com exportação para **Excel (.xlsx)** 
 
 ## Download
 
-- Patch: [download/exportsql_v1_5.ptm](https://github.com/marcelosecate/ExportSql/raw/main/download/exportsql_v1_5.ptm)
+- Patch: [download/exportsql_v1_5_1.ptm](https://github.com/marcelosecate/ExportSql/raw/main/download/exportsql_v1_5_1.ptm)
 - Instalação e uso: [LEIA-ME.txt](LEIA-ME.txt)
 
 Testado no Protheus 12.1.2510 (AppServer 7.00.240223P) com SQL Server, pelo SmartClient webapp.
@@ -29,11 +29,15 @@ Testado no Protheus 12.1.2510 (AppServer 7.00.240223P) com SQL Server, pelo Smar
 
 ## Como usar
 
-1. Faça backup do RPO e aplique o patch `exportsql_v1_5.ptm`.
+1. Faça backup do RPO e aplique o patch `exportsql_v1_5_1.ptm`.
 2. No SmartClient ou no webapp, informe o programa inicial `U_SPILR01`.
 3. Entre com empresa, filial e um usuário do grupo Administradores.
 
 Detalhes, segurança e limitações conhecidas no [LEIA-ME.txt](LEIA-ME.txt).
+
+## Novidades da v1.5.1
+
+- Correção: campos numéricos que não estão no dicionário (SX3), como X3_TAMANHO e X3_DECIMAL das próprias tabelas do dicionário, saem com o tamanho e as casas decimais da tabela de origem (antes vinham com 8 casas decimais no .sdb).
 
 ## Novidades da v1.5
 
